@@ -9,18 +9,18 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --gold: #c9a84c;
-    --gold-light: #e8d5a3;
-    --gold-dark: #8a6a1f;
+    --gold: #d4a843;
+    --gold-light: #f0dfa0;
+    --gold-dark: #a07828;
     --cream: #fdf8f0;
-    --dark: #1a1108;
+    --dark: #2e2416;
   }
 
   body {
     font-family: 'Cormorant Garamond', serif;
-    background: var(--dark);
+    background: #3a2e1e;
     min-height: 100vh;
-    color: var(--cream);
+    color: #fdf8f0;
     overflow-x: hidden;
   }
 
@@ -29,9 +29,8 @@
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.06) 0%, transparent 50%),
-      repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(201,168,76,0.015) 40px, rgba(201,168,76,0.015) 41px);
+      radial-gradient(ellipse at 20% 50%, rgba(212,168,67,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(212,168,67,0.10) 0%, transparent 50%);
     pointer-events: none;
     z-index: 0;
   }
@@ -217,33 +216,34 @@
   }
 
   .rect-table .table-inner {
-    width: 88px; height: 54px;
-    border: 1.5px solid rgba(201,168,76,0.45);
+    width: 100px; height: 68px;
+    border: 1.5px solid rgba(212,168,67,0.6);
     border-radius: 6px;
-    background: linear-gradient(135deg, rgba(44,31,14,0.9), rgba(60,42,18,0.8));
+    background: linear-gradient(135deg, rgba(80,58,28,0.95), rgba(100,74,34,0.9));
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.15);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(212,168,67,0.2);
     transition: box-shadow 0.3s, border-color 0.3s;
   }
   .round-table .table-inner {
-    width: 100px; height: 70px;
-    border: 1.5px solid rgba(201,168,76,0.45);
+    width: 114px; height: 80px;
+    border: 1.5px solid rgba(212,168,67,0.6);
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(26,58,42,0.9), rgba(36,72,52,0.8));
+    background: linear-gradient(135deg, rgba(34,80,54,0.95), rgba(46,100,68,0.9));
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.15);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(212,168,67,0.2);
     transition: box-shadow 0.3s, border-color 0.3s;
   }
 
   .table-num {
     font-family: 'Playfair Display', serif;
-    font-size: 15px; font-weight: 700;
-    color: var(--gold-light); line-height: 1;
+    font-size: 17px; font-weight: 700;
+    color: #f0dfa0; line-height: 1;
   }
-  .table-cap { font-size: 10px; color: rgba(201,168,76,0.6); letter-spacing: 0.5px; margin-top: 2px; }
-  .table-count { font-size: 9px; color: var(--gold); margin-top: 3px; font-weight: 500; }
+  .table-cap { font-size: 10px; color: rgba(212,168,67,0.7); letter-spacing: 0.5px; margin-top: 2px; }
+  .table-desc { font-size: 9px; color: #f0dfa0; margin-top: 2px; font-weight: 600; letter-spacing: 0.3px; opacity: 0.9; }
+  .table-count { font-size: 9px; color: var(--gold); margin-top: 2px; font-weight: 500; }
 
   .guest-badge {
     position: absolute; top: -5px; right: -5px;
@@ -425,10 +425,18 @@
   let currentTable = null;
   let allGuests = [];
 
+  const tableDescriptions = {
+    6: 'ABB İnfra',
+    7: 'Datazen',
+    8: 'ABB DevOps',
+    9: 'Azerconnect'
+  };
+
   function getCapacity(n) { return (n >= 13 && n <= 24) ? 12 : 14; }
 
   function createCard(num, isRound) {
     const cap = getCapacity(num);
+    const desc = tableDescriptions[num] || '';
     const div = document.createElement('div');
     div.className = `table-card ${isRound ? 'round-table' : 'rect-table'}`;
     div.id = `table-${num}`;
@@ -437,6 +445,7 @@
       <div class="table-inner">
         <div class="table-num">${num}</div>
         <div class="table-cap">Seats ${cap}</div>
+        ${desc ? `<div class="table-desc">${desc}</div>` : ''}
         <div class="table-count" id="count-${num}"></div>
       </div>
       <div class="guest-badge" id="badge-${num}" style="display:none"></div>
@@ -532,7 +541,8 @@
   function openModal(num) {
     currentTable = num;
     const cap = getCapacity(num);
-    document.getElementById('modal-title').childNodes[0].textContent = `Table ${num}  `;
+    const desc = tableDescriptions[num] || '';
+    document.getElementById('modal-title').childNodes[0].textContent = `Table ${num}${desc ? ' — ' + desc : ''}  `;
     document.getElementById('modal-subtitle').textContent = `Seats ${cap}`;
     renderGuestList();
     document.getElementById('modal').classList.add('open');
