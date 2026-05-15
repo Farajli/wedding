@@ -350,6 +350,30 @@
   .modal::-webkit-scrollbar { width: 4px; }
   .modal::-webkit-scrollbar-track { background: transparent; }
   .modal::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 2px; }
+
+  .add-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .add-input {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(201,168,76,0.35);
+    border-radius: 6px;
+    padding: 9px 12px;
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .add-input:focus { border-color: var(--gold); }
+  .add-input::placeholder { color: rgba(253,248,240,0.3); }
+  .add-btn {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none; border-radius: 6px;
+    padding: 9px 16px;
+    color: var(--dark); font-size: 20px; font-weight: 700;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .add-btn:hover { opacity: 0.85; }
 </style>
 </head>
 <body>
@@ -405,10 +429,13 @@
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
+      <div class="add-row">
+        <input class="add-input" id="guest-input" placeholder="Guest name..." maxlength="60" />
+        <button class="add-btn" onclick="addGuest()">+</button>
+      </div>
       <ul class="guest-list" id="guest-list"></ul>
       <div class="empty-msg" id="empty-msg">No guests assigned to this table yet</div>
       <div class="modal-capacity" id="modal-capacity"></div>
-      <div class="readonly-notice">View only — managed by the host</div>
     </div>
   </div>
 </div>
@@ -545,9 +572,51 @@
     const desc = tableDescriptions[num] || '';
     document.getElementById('modal-title').childNodes[0].textContent = `Table ${num}${desc ? ' — ' + desc : ''}  `;
     document.getElementById('modal-subtitle').textContent = `Seats ${cap}`;
+    document.getElementById('guest-input').value = '';
     renderGuestList();
     document.getElementById('modal').classList.add('open');
+    setTimeout(() => document.getElementById('guest-input').focus(), 100);
   }
+
+  async function addGuest() {
+    if (!currentTable) return;
+    const input = document.getElementById('guest-input');
+    const name = input.value.trim();
+    if (!name) return;
+    const cap = getCapacity(currentTable);
+    if (tables[currentTable].guests.length >= cap) {
+      input.style.borderColor = '#e0845c';
+      setTimeout(() => input.style.borderColor = '', 1000);
+      return;
+    }
+    input.disabled = true;
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/guests`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ table_number: currentTable, name })
+      });
+      if (res.ok) {
+        tables[currentTable].guests.push(name);
+        allGuests.push({ table_number: currentTable, name });
+        input.value = '';
+        renderGuestList();
+        updateCard(currentTable);
+      }
+    } catch(e) {}
+    input.disabled = false;
+    input.focus();
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && document.getElementById('modal').classList.contains('open')) {
+      addGuest();
+    }
+  });
 
   function closeModal() {
     document.getElementById('modal').classList.remove('open');
