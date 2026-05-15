@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Seats</title>
+<title>Wedding Seating Plan</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,7 +14,6 @@
     --gold-dark: #8a6a1f;
     --cream: #fdf8f0;
     --dark: #1a1108;
-    --shadow: rgba(0,0,0,0.25);
   }
 
   body {
@@ -67,10 +66,85 @@
     text-transform: uppercase;
   }
 
-  /* Loading */
+  .search-wrap {
+    max-width: 480px;
+    margin: 20px auto 0;
+    padding: 0 16px;
+    position: relative;
+  }
+  .search-input {
+    width: 100%;
+    padding: 12px 44px 12px 18px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(201,168,76,0.35);
+    border-radius: 30px;
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .search-input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 16px rgba(201,168,76,0.15);
+  }
+  .search-input::placeholder { color: rgba(253,248,240,0.3); }
+  .search-icon {
+    position: absolute;
+    right: 32px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: rgba(201,168,76,0.4);
+    pointer-events: none;
+  }
+
+  .search-results {
+    display: none;
+    max-width: 480px;
+    margin: 10px auto 0;
+    padding: 0 16px;
+  }
+  .search-results.visible { display: block; }
+  .search-result-box {
+    background: linear-gradient(160deg, #1e1408, #0f0b04);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px;
+    padding: 8px 20px;
+  }
+  .search-result-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    animation: fadeIn 0.2s ease;
+  }
+  .search-result-item:last-child { border-bottom: none; }
+  .result-name { font-size: 16px; color: var(--cream); }
+  .result-table {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: var(--gold);
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 20px;
+    padding: 3px 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .result-table:hover { background: rgba(201,168,76,0.25); }
+  .search-empty {
+    text-align: center;
+    color: rgba(253,248,240,0.3);
+    font-style: italic;
+    font-size: 14px;
+    padding: 14px 0;
+  }
+
   .loading-bar {
     text-align: center;
-    padding: 12px;
+    padding: 10px;
     font-size: 13px;
     color: rgba(201,168,76,0.6);
     letter-spacing: 2px;
@@ -101,7 +175,6 @@
     max-width: 900px;
     margin: 0 auto;
     padding: 20px 16px 0;
-    position: relative;
   }
 
   .col { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 8px 4px; }
@@ -138,6 +211,10 @@
   .table-card:hover { transform: scale(1.07); }
   .table-card:hover .table-inner { box-shadow: 0 0 18px rgba(201,168,76,0.5); }
   .table-card.has-guests .table-inner { border-color: var(--gold); }
+  .table-card.highlighted .table-inner {
+    border-color: #fff !important;
+    box-shadow: 0 0 24px rgba(255,255,255,0.4) !important;
+  }
 
   .rect-table .table-inner {
     width: 88px; height: 54px;
@@ -147,6 +224,7 @@
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     box-shadow: 0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.15);
+    transition: box-shadow 0.3s, border-color 0.3s;
   }
   .round-table .table-inner {
     width: 100px; height: 70px;
@@ -156,6 +234,7 @@
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     box-shadow: 0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.15);
+    transition: box-shadow 0.3s, border-color 0.3s;
   }
 
   .table-num {
@@ -192,7 +271,6 @@
     background: rgba(201,168,76,0.05);
   }
 
-  /* Modal */
   .modal-overlay {
     display: none;
     position: fixed; inset: 0;
@@ -241,13 +319,15 @@
 
   .guest-list { list-style: none; }
   .guest-item {
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center;
     padding: 10px 0;
     border-bottom: 1px solid rgba(201,168,76,0.1);
     animation: fadeIn 0.25s ease;
+    gap: 10px;
+    font-size: 15px;
+    color: var(--cream);
   }
   @keyframes fadeIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
-  .guest-name { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--cream); }
   .guest-num { font-size: 11px; color: rgba(201,168,76,0.4); min-width: 20px; font-family: 'Playfair Display', serif; }
 
   .empty-msg {
@@ -260,41 +340,44 @@
     text-align: right; margin-top: 12px; letter-spacing: 1px;
   }
   .capacity-warn { color: #e0845c; }
+  .readonly-notice {
+    text-align: center; font-size: 12px;
+    color: rgba(201,168,76,0.3); padding: 10px 0 0;
+    letter-spacing: 1px; font-style: italic;
+  }
 
   .modal::-webkit-scrollbar { width: 4px; }
   .modal::-webkit-scrollbar-track { background: transparent; }
   .modal::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 2px; }
-
-  /* Readonly notice */
-  .readonly-notice {
-    text-align: center;
-    font-size: 12px;
-    color: rgba(201,168,76,0.35);
-    padding: 10px 0 0;
-    letter-spacing: 1px;
-    font-style: italic;
-  }
 </style>
 </head>
 <body>
 <div class="wrapper">
 
   <header>
-    <div class="header-ornament">✦ &nbsp; TOY MƏCLISI &nbsp; ✦</div>
-    <h1>Bəy — <em>Gəlin</em></h1>
-    <div class="header-sub">Masa Sxemi &nbsp;·&nbsp; Oturma Planı</div>
+    <div class="header-ornament">✦ &nbsp; Wedding Reception &nbsp; ✦</div>
+    <h1>Bride &amp; <em>Groom</em></h1>
+    <div class="header-sub">Seating Plan &nbsp;·&nbsp; Table Layout</div>
+
+    <div class="search-wrap">
+      <input class="search-input" id="search-input" type="text" placeholder="Search your name..." autocomplete="off" />
+      <span class="search-icon">🔍</span>
+    </div>
+    <div class="search-results" id="search-results">
+      <div class="search-result-box" id="search-result-box"></div>
+    </div>
   </header>
 
-  <div class="loading-bar" id="loading-bar">Yüklənir...</div>
+  <div class="loading-bar" id="loading-bar">Loading guests...</div>
 
   <div class="legend">
-    <div class="legend-item"><div class="legend-box"></div> Düzbucaqlı masa (14 nəfərlik)</div>
-    <div class="legend-item"><div class="legend-oval"></div> Oval masa (12 nəfərlik)</div>
+    <div class="legend-item"><div class="legend-box"></div> Rectangular table (seats 14)</div>
+    <div class="legend-item"><div class="legend-oval"></div> Oval table (seats 12)</div>
   </div>
 
-  <div class="hall" id="hall">
+  <div class="hall">
     <div class="beygelin-banner">
-      <span class="beygelin-text">Bəy &amp; Gəlin</span>
+      <span class="beygelin-text">Bride &amp; Groom</span>
     </div>
     <div class="col col-left" id="left-col"></div>
     <div class="col" id="center-left-col"></div>
@@ -303,29 +386,28 @@
     <div class="bottom-bar">
       <div class="giris-btn">
         <div class="giris-icon">🏠</div>
-        <div class="giris-label">Giriş</div>
+        <div class="giris-label">Entrance</div>
       </div>
-      <div class="sahne-box">Səhnə</div>
-      <div class="musiqi-box">Musiqi</div>
+      <div class="sahne-box">Stage</div>
+      <div class="musiqi-box">Music</div>
     </div>
   </div>
 </div>
 
-<!-- Modal -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="modal-title">
-        Masa 1
-        <span id="modal-subtitle">14 nəfərlik</span>
+        Table 1
+        <span id="modal-subtitle">Seats 14</span>
       </div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
       <ul class="guest-list" id="guest-list"></ul>
-      <div class="empty-msg" id="empty-msg">Bu masada hələ qonaq yoxdur</div>
+      <div class="empty-msg" id="empty-msg">No guests assigned to this table yet</div>
       <div class="modal-capacity" id="modal-capacity"></div>
-      <div class="readonly-notice">Siyahı yalnız oxumaq üçündür</div>
+      <div class="readonly-notice">View only — managed by the host</div>
     </div>
   </div>
 </div>
@@ -341,10 +423,9 @@
 
   const tables = {};
   let currentTable = null;
+  let allGuests = [];
 
-  function getCapacity(n) {
-    return (n >= 13 && n <= 24) ? 12 : 14;
-  }
+  function getCapacity(n) { return (n >= 13 && n <= 24) ? 12 : 14; }
 
   function createCard(num, isRound) {
     const cap = getCapacity(num);
@@ -355,7 +436,7 @@
     div.innerHTML = `
       <div class="table-inner">
         <div class="table-num">${num}</div>
-        <div class="table-cap">${cap} nəfərlik</div>
+        <div class="table-cap">Seats ${cap}</div>
         <div class="table-count" id="count-${num}"></div>
       </div>
       <div class="guest-badge" id="badge-${num}" style="display:none"></div>
@@ -364,19 +445,13 @@
   }
 
   function buildLayout() {
-    [...leftTables,...clTables,...crTables,...rightTables].forEach(n => {
-      tables[n] = { guests: [] };
-    });
-
+    [...leftTables,...clTables,...crTables,...rightTables].forEach(n => { tables[n] = { guests: [] }; });
     const lc = document.getElementById('left-col');
     leftTables.forEach(n => lc.appendChild(createCard(n, false)));
-
     const clc = document.getElementById('center-left-col');
     clTables.forEach(n => clc.appendChild(createCard(n, true)));
-
     const crc = document.getElementById('center-right-col');
     crTables.forEach(n => crc.appendChild(createCard(n, true)));
-
     const rc = document.getElementById('right-col');
     rightTables.forEach(n => rc.appendChild(createCard(n, false)));
   }
@@ -387,11 +462,10 @@
     const badge = document.getElementById(`badge-${num}`);
     const count = document.getElementById(`count-${num}`);
     const card  = document.getElementById(`table-${num}`);
-
     if (guests.length > 0) {
       badge.style.display = 'flex';
       badge.textContent = guests.length;
-      count.textContent = `${guests.length}/${cap} nəfər`;
+      count.textContent = `${guests.length}/${cap} guests`;
       card.classList.add('has-guests');
     } else {
       badge.style.display = 'none';
@@ -403,30 +477,63 @@
   async function loadGuests() {
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/guests?select=table_number,name&order=created_at`, {
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
-        }
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
       });
       const data = await res.json();
-      data.forEach(row => {
-        const num = row.table_number;
-        if (tables[num]) {
-          tables[num].guests.push(row.name);
-        }
-      });
+      allGuests = data;
+      data.forEach(row => { if (tables[row.table_number]) tables[row.table_number].guests.push(row.name); });
       Object.keys(tables).forEach(n => updateCard(parseInt(n)));
       document.getElementById('loading-bar').style.display = 'none';
     } catch (e) {
-      document.getElementById('loading-bar').textContent = 'Yükləmə xətası. Səhifəni yeniləyin.';
+      document.getElementById('loading-bar').textContent = 'Failed to load. Please refresh.';
     }
   }
+
+  // Search
+  document.getElementById('search-input').addEventListener('input', function() {
+    const q = this.value.trim().toLowerCase();
+    const results = document.getElementById('search-results');
+    const box = document.getElementById('search-result-box');
+    clearHighlights();
+    if (q.length < 2) { results.classList.remove('visible'); return; }
+    const matches = allGuests.filter(g => g.name.toLowerCase().includes(q));
+    if (matches.length === 0) {
+      box.innerHTML = '<div class="search-empty">No guest found with this name</div>';
+    } else {
+      box.innerHTML = matches.map(g =>
+        `<div class="search-result-item">
+          <span class="result-name">${g.name}</span>
+          <span class="result-table" onclick="highlightTable(${g.table_number})">Table ${g.table_number}</span>
+        </div>`
+      ).join('');
+    }
+    results.classList.add('visible');
+  });
+
+  function clearHighlights() {
+    document.querySelectorAll('.table-card.highlighted').forEach(el => el.classList.remove('highlighted'));
+  }
+
+  function highlightTable(num) {
+    clearHighlights();
+    const card = document.getElementById(`table-${num}`);
+    if (card) {
+      card.classList.add('highlighted');
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.search-wrap') && !e.target.closest('.search-results')) {
+      document.getElementById('search-results').classList.remove('visible');
+    }
+  });
 
   function openModal(num) {
     currentTable = num;
     const cap = getCapacity(num);
-    document.getElementById('modal-title').childNodes[0].textContent = `Masa ${num}  `;
-    document.getElementById('modal-subtitle').textContent = `${cap} nəfərlik`;
+    document.getElementById('modal-title').childNodes[0].textContent = `Table ${num}  `;
+    document.getElementById('modal-subtitle').textContent = `Seats ${cap}`;
     renderGuestList();
     document.getElementById('modal').classList.add('open');
   }
@@ -447,7 +554,6 @@
     const list = document.getElementById('guest-list');
     const empty = document.getElementById('empty-msg');
     const capEl = document.getElementById('modal-capacity');
-
     list.innerHTML = '';
     if (guests.length === 0) {
       empty.style.display = 'block';
@@ -456,17 +562,12 @@
       guests.forEach((g, i) => {
         const li = document.createElement('li');
         li.className = 'guest-item';
-        li.innerHTML = `
-          <div class="guest-name">
-            <span class="guest-num">${i+1}.</span>
-            ${g}
-          </div>
-        `;
+        li.innerHTML = `<span class="guest-num">${i+1}.</span>${g}`;
         list.appendChild(li);
       });
     }
     const remaining = cap - guests.length;
-    capEl.innerHTML = `<span class="${remaining < 3 ? 'capacity-warn' : ''}">${guests.length}/${cap} yer dolu — ${remaining} yer boş</span>`;
+    capEl.innerHTML = `<span class="${remaining < 3 ? 'capacity-warn' : ''}">${guests.length}/${cap} seats filled — ${remaining} remaining</span>`;
   }
 
   buildLayout();
