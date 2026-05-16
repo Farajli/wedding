@@ -374,6 +374,16 @@
     cursor: pointer; transition: opacity 0.2s;
   }
   .add-btn:hover { opacity: 0.85; }
+
+  .del-btn {
+    background: none; border: none;
+    color: rgba(201,168,76,0.3);
+    cursor: pointer; font-size: 14px;
+    padding: 2px 6px; border-radius: 4px;
+    margin-left: auto;
+    transition: color 0.2s, background 0.2s;
+  }
+  .del-btn:hover { color: #e05c5c; background: rgba(224,92,92,0.1); }
 </style>
 </head>
 <body>
@@ -642,12 +652,31 @@
       guests.forEach((g, i) => {
         const li = document.createElement('li');
         li.className = 'guest-item';
-        li.innerHTML = `<span class="guest-num">${i+1}.</span>${g}`;
+        li.innerHTML = `<span class="guest-num">${i+1}.</span>${g}<button class="del-btn" onclick="deleteGuest('${g.replace(/'/g,"\\'")}', ${currentTable})">✕</button>`;
         list.appendChild(li);
       });
     }
     const remaining = cap - guests.length;
     capEl.innerHTML = `<span class="${remaining < 3 ? 'capacity-warn' : ''}">${guests.length}/${cap} seats filled — ${remaining} remaining</span>`;
+  }
+
+  async function deleteGuest(name, tableNum) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/guests?table_number=eq.${tableNum}&name=eq.${encodeURIComponent(name)}&limit=1`, {
+        method: 'DELETE',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      if (res.ok) {
+        const idx = tables[tableNum].guests.indexOf(name);
+        if (idx > -1) tables[tableNum].guests.splice(idx, 1);
+        allGuests = allGuests.filter(g => !(g.table_number === tableNum && g.name === name));
+        renderGuestList();
+        updateCard(tableNum);
+      }
+    } catch(e) {}
   }
 
   buildLayout();
