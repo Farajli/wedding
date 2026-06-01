@@ -7,393 +7,94 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --gold: #c9a84c;
-    --gold-light: #e8d5a3;
-    --gold-dark: #8a6a1f;
-    --cream: #fdf8f0;
-    --dark: #1a1108;
-  }
-
-  body {
-    font-family: 'Cormorant Garamond', serif;
-    background: var(--dark);
-    min-height: 100vh;
-    color: var(--cream);
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.06) 0%, transparent 50%),
-      repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(201,168,76,0.015) 40px, rgba(201,168,76,0.015) 41px);
-    pointer-events: none;
-    z-index: 0;
-  }
-
+  :root { --gold: #c9a84c; --gold-light: #e8d5a3; --gold-dark: #8a6a1f; --cream: #fdf8f0; --dark: #1a1108; }
+  body { font-family: 'Cormorant Garamond', serif; background: var(--dark); min-height: 100vh; color: var(--cream); overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.06) 0%, transparent 50%), repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(201,168,76,0.015) 40px, rgba(201,168,76,0.015) 41px); pointer-events: none; z-index: 0; }
   .wrapper { position: relative; z-index: 1; }
-
-  header {
-    text-align: center;
-    padding: 40px 20px 20px;
-    border-bottom: 1px solid rgba(201,168,76,0.3);
-  }
-  .header-ornament {
-    font-size: 13px;
-    letter-spacing: 6px;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 400;
-    color: var(--gold-light);
-    letter-spacing: 4px;
-  }
+  header { text-align: center; padding: 40px 20px 20px; border-bottom: 1px solid rgba(201,168,76,0.3); }
+  .header-ornament { font-size: 13px; letter-spacing: 6px; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; }
+  header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 400; color: var(--gold-light); letter-spacing: 4px; }
   header h1 em { font-style: italic; color: var(--gold); }
-  .header-sub {
-    margin-top: 8px;
-    font-size: 14px;
-    color: rgba(253,248,240,0.5);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-  }
-
-  .search-wrap {
-    max-width: 480px;
-    margin: 20px auto 0;
-    padding: 0 16px;
-    position: relative;
-  }
-  .search-input {
-    width: 100%;
-    padding: 12px 44px 12px 18px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(201,168,76,0.35);
-    border-radius: 30px;
-    color: var(--cream);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 16px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    letter-spacing: 0.5px;
-  }
-  .search-input:focus {
-    border-color: var(--gold);
-    box-shadow: 0 0 16px rgba(201,168,76,0.15);
-  }
+  .header-sub { margin-top: 8px; font-size: 14px; color: rgba(253,248,240,0.5); letter-spacing: 3px; text-transform: uppercase; }
+  .search-wrap { max-width: 480px; margin: 20px auto 0; padding: 0 16px; position: relative; }
+  .search-input { width: 100%; padding: 12px 44px 12px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(201,168,76,0.35); border-radius: 30px; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; letter-spacing: 0.5px; }
+  .search-input:focus { border-color: var(--gold); box-shadow: 0 0 16px rgba(201,168,76,0.15); }
   .search-input::placeholder { color: rgba(253,248,240,0.3); }
-  .search-icon {
-    position: absolute;
-    right: 32px; top: 50%;
-    transform: translateY(-50%);
-    font-size: 18px;
-    color: rgba(201,168,76,0.4);
-    pointer-events: none;
-  }
-
-  .search-results {
-    display: none;
-    max-width: 480px;
-    margin: 10px auto 0;
-    padding: 0 16px;
-  }
+  .search-icon { position: absolute; right: 32px; top: 50%; transform: translateY(-50%); font-size: 18px; color: rgba(201,168,76,0.4); pointer-events: none; }
+  .search-results { display: none; max-width: 480px; margin: 10px auto 0; padding: 0 16px; }
   .search-results.visible { display: block; }
-  .search-result-box {
-    background: linear-gradient(160deg, #1e1408, #0f0b04);
-    border: 1px solid rgba(201,168,76,0.3);
-    border-radius: 10px;
-    padding: 8px 20px;
-  }
-  .search-result-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(201,168,76,0.1);
-    animation: fadeIn 0.2s ease;
-  }
+  .search-result-box { background: linear-gradient(160deg, #1e1408, #0f0b04); border: 1px solid rgba(201,168,76,0.3); border-radius: 10px; padding: 8px 20px; }
+  .search-result-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(201,168,76,0.1); animation: fadeIn 0.2s ease; }
   .search-result-item:last-child { border-bottom: none; }
   .result-name { font-size: 16px; color: var(--cream); }
-  .result-table {
-    font-family: 'Playfair Display', serif;
-    font-size: 13px;
-    color: var(--gold);
-    background: rgba(201,168,76,0.1);
-    border: 1px solid rgba(201,168,76,0.3);
-    border-radius: 20px;
-    padding: 3px 12px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
+  .result-table { font-family: 'Playfair Display', serif; font-size: 13px; color: var(--gold); background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3); border-radius: 20px; padding: 3px 12px; cursor: pointer; transition: background 0.2s; }
   .result-table:hover { background: rgba(201,168,76,0.25); }
-  .search-empty {
-    text-align: center;
-    color: rgba(253,248,240,0.3);
-    font-style: italic;
-    font-size: 14px;
-    padding: 14px 0;
-  }
-
-  .loading-bar {
-    text-align: center;
-    padding: 10px;
-    font-size: 13px;
-    color: rgba(201,168,76,0.6);
-    letter-spacing: 2px;
-  }
-
-  .legend {
-    display: flex;
-    justify-content: center;
-    gap: 28px;
-    padding: 16px;
-    flex-wrap: wrap;
-  }
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    color: rgba(253,248,240,0.6);
-    letter-spacing: 1px;
-  }
+  .search-empty { text-align: center; color: rgba(253,248,240,0.3); font-style: italic; font-size: 14px; padding: 14px 0; }
+  .loading-bar { text-align: center; padding: 10px; font-size: 13px; color: rgba(201,168,76,0.6); letter-spacing: 2px; }
+  .legend { display: flex; justify-content: center; gap: 28px; padding: 16px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(253,248,240,0.6); letter-spacing: 1px; }
   .legend-box { width: 20px; height: 14px; border-radius: 3px; border: 1px solid var(--gold); background: rgba(44,31,14,0.6); }
   .legend-oval { width: 20px; height: 14px; border-radius: 50%; border: 1px solid var(--gold); background: rgba(26,58,42,0.6); }
-
-  .hall {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 0;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px 16px 0;
-  }
-
+  .hall { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0; max-width: 900px; margin: 0 auto; padding: 20px 16px 0; }
   .col { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 8px 4px; }
-  .col-left  { align-items: flex-end; }
+  .col-left { align-items: flex-end; }
   .col-right { align-items: flex-start; }
-
-  .beygelin-banner {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 14px 0 8px;
-  }
-  .beygelin-banner::before,
-  .beygelin-banner::after {
-    content: '—————';
-    color: var(--gold-dark);
-    font-size: 11px;
-    letter-spacing: 3px;
-    margin: 0 12px;
-  }
-  .beygelin-text {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    font-style: italic;
-    color: var(--gold-light);
-    letter-spacing: 5px;
-    display: inline;
-  }
-
-  .table-card {
-    cursor: pointer;
-    transition: transform 0.2s;
-    position: relative;
-  }
+  .beygelin-banner { grid-column: 1 / -1; text-align: center; padding: 14px 0 8px; }
+  .beygelin-banner::before, .beygelin-banner::after { content: '—————'; color: var(--gold-dark); font-size: 11px; letter-spacing: 3px; margin: 0 12px; }
+  .beygelin-text { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-style: italic; color: var(--gold-light); letter-spacing: 5px; display: inline; }
+  .table-card { cursor: pointer; transition: transform 0.2s; position: relative; }
   .table-card:hover { transform: scale(1.07); }
   .table-card:hover .table-inner { box-shadow: 0 0 18px rgba(201,168,76,0.5); }
   .table-card.has-guests .table-inner { border-color: var(--gold); }
-  .table-card.highlighted .table-inner {
-    border-color: #fff !important;
-    box-shadow: 0 0 24px rgba(255,255,255,0.4) !important;
-  }
-
-  .rect-table .table-inner {
-    width: 100px; height: 72px;
-    border: 1.5px solid rgba(201,168,76,0.45);
-    border-radius: 6px;
-    background: linear-gradient(135deg, rgba(44,31,14,0.9), rgba(60,42,18,0.8));
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.15);
-    transition: box-shadow 0.3s, border-color 0.3s;
-  }
-  .round-table .table-inner {
-    width: 114px; height: 82px;
-    border: 1.5px solid rgba(201,168,76,0.45);
-    border-radius: 50%;
-    background: linear-gradient(135deg, rgba(26,58,42,0.9), rgba(36,72,52,0.8));
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.15);
-    transition: box-shadow 0.3s, border-color 0.3s;
-  }
-
-  .table-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px; font-weight: 700;
-    color: var(--gold-light); line-height: 1;
-  }
+  .table-card.highlighted .table-inner { border-color: #fff !important; box-shadow: 0 0 24px rgba(255,255,255,0.4) !important; }
+  .rect-table .table-inner { width: 100px; min-height: 72px; height: auto; padding: 8px 4px; border: 1.5px solid rgba(201,168,76,0.45); border-radius: 6px; background: linear-gradient(135deg, rgba(44,31,14,0.9), rgba(60,42,18,0.8)); display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.15); transition: box-shadow 0.3s, border-color 0.3s; }
+  .round-table .table-inner { width: 114px; height: 82px; border: 1.5px solid rgba(201,168,76,0.45); border-radius: 50%; background: linear-gradient(135deg, rgba(26,58,42,0.9), rgba(36,72,52,0.8)); display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.15); transition: box-shadow 0.3s, border-color 0.3s; }
+  .table-num { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--gold-light); line-height: 1; }
   .table-cap { font-size: 10px; color: rgba(201,168,76,0.6); letter-spacing: 0.5px; margin-top: 1px; }
   .table-desc { font-size: 11px; color: #fff; margin-top: 3px; font-weight: 700; letter-spacing: 0.5px; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
   .table-count { font-size: 12px; color: #fdeea0; margin-top: 3px; font-weight: 700; }
-
-  .guest-badge {
-    position: absolute; top: -8px; right: -8px;
-    width: 26px; height: 26px; border-radius: 50%;
-    background: #c8952a; color: #fff;
-    font-size: 12px; font-weight: 800;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-  }
-
-  .bottom-bar {
-    grid-column: 1 / -1;
-    display: flex; align-items: center; justify-content: center;
-    gap: 20px; padding: 24px 0 30px;
-  }
+  .guest-badge { position: absolute; top: -8px; right: -8px; width: 26px; height: 26px; border-radius: 50%; background: #c8952a; color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.25); }
+  .bottom-bar { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 20px; padding: 24px 0 30px; }
   .giris-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; }
   .giris-icon { font-size: 28px; filter: drop-shadow(0 0 6px rgba(201,168,76,0.4)); }
   .giris-label { font-size: 11px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; }
-  .sahne-box, .musiqi-box {
-    padding: 10px 22px;
-    border: 1.5px solid rgba(201,168,76,0.5);
-    border-radius: 6px; font-size: 13px;
-    color: var(--gold-light); letter-spacing: 3px;
-    text-transform: uppercase;
-    background: rgba(201,168,76,0.05);
-  }
-
-  .modal-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(10,7,2,0.85);
-    backdrop-filter: blur(6px);
-    z-index: 100;
-    align-items: center; justify-content: center;
-    padding: 20px;
-  }
+  .sahne-box, .musiqi-box { padding: 10px 22px; border: 1.5px solid rgba(201,168,76,0.5); border-radius: 6px; font-size: 13px; color: var(--gold-light); letter-spacing: 3px; text-transform: uppercase; background: rgba(201,168,76,0.05); }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(10,7,2,0.85); backdrop-filter: blur(6px); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: linear-gradient(160deg, #1e1408, #0f0b04);
-    border: 1px solid rgba(201,168,76,0.4);
-    border-radius: 12px;
-    width: 100%; max-width: 420px; max-height: 85vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
-    animation: modalIn 0.3s ease;
-  }
-  @keyframes modalIn {
-    from { transform: scale(0.9) translateY(20px); opacity: 0; }
-    to   { transform: scale(1) translateY(0); opacity: 1; }
-  }
-  .modal-header {
-    padding: 24px 24px 16px;
-    border-bottom: 1px solid rgba(201,168,76,0.2);
-    display: flex; justify-content: space-between; align-items: flex-start;
-  }
-  .modal-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem; color: var(--gold-light);
-  }
-  .modal-title span {
-    display: block; font-size: 12px;
-    color: rgba(201,168,76,0.5); letter-spacing: 2px;
-    font-family: 'Cormorant Garamond', serif; margin-top: 2px;
-  }
-  .modal-close {
-    background: none; border: none;
-    color: rgba(201,168,76,0.5); font-size: 22px;
-    cursor: pointer; padding: 0 4px; line-height: 1;
-    transition: color 0.2s;
-  }
+  .modal { background: linear-gradient(160deg, #1e1408, #0f0b04); border: 1px solid rgba(201,168,76,0.4); border-radius: 12px; width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.7); animation: modalIn 0.3s ease; }
+  @keyframes modalIn { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+  .modal-header { padding: 24px 24px 16px; border-bottom: 1px solid rgba(201,168,76,0.2); display: flex; justify-content: space-between; align-items: flex-start; }
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--gold-light); }
+  .modal-title span { display: block; font-size: 12px; color: rgba(201,168,76,0.5); letter-spacing: 2px; font-family: 'Cormorant Garamond', serif; margin-top: 2px; }
+  .modal-close { background: none; border: none; color: rgba(201,168,76,0.5); font-size: 22px; cursor: pointer; padding: 0 4px; line-height: 1; transition: color 0.2s; }
   .modal-close:hover { color: var(--gold); }
   .modal-body { padding: 16px 24px 24px; }
-
   .guest-list { list-style: none; }
-  .guest-item {
-    display: flex; align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(201,168,76,0.1);
-    animation: fadeIn 0.25s ease;
-    gap: 10px;
-    font-size: 16px;
-    color: var(--cream);
-  }
+  .guest-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(201,168,76,0.1); animation: fadeIn 0.25s ease; gap: 10px; font-size: 16px; color: var(--cream); }
   @keyframes fadeIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
   .guest-num { font-size: 12px; color: rgba(201,168,76,0.4); min-width: 22px; font-family: 'Playfair Display', serif; }
-
-  .empty-msg {
-    text-align: center;
-    color: rgba(253,248,240,0.25);
-    font-style: italic; padding: 20px 0; font-size: 14px;
-  }
-  .modal-capacity {
-    font-size: 13px; color: rgba(201,168,76,0.5);
-    text-align: right; margin-top: 12px; letter-spacing: 1px;
-  }
+  .empty-msg { text-align: center; color: rgba(253,248,240,0.25); font-style: italic; padding: 20px 0; font-size: 14px; }
+  .modal-capacity { font-size: 13px; color: rgba(201,168,76,0.5); text-align: right; margin-top: 12px; letter-spacing: 1px; }
   .capacity-warn { color: #e0845c; }
-  .readonly-notice {
-    text-align: center; font-size: 12px;
-    color: rgba(201,168,76,0.3); padding: 10px 0 0;
-    letter-spacing: 1px; font-style: italic;
-  }
-
   .modal::-webkit-scrollbar { width: 4px; }
   .modal::-webkit-scrollbar-track { background: transparent; }
   .modal::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 2px; }
-
   .add-row { display: flex; gap: 8px; margin-bottom: 16px; }
-  .add-input {
-    flex: 1;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(201,168,76,0.35);
-    border-radius: 6px;
-    padding: 9px 12px;
-    color: var(--cream);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
+  .add-input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(201,168,76,0.35); border-radius: 6px; padding: 9px 12px; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 15px; outline: none; transition: border-color 0.2s; }
   .add-input:focus { border-color: var(--gold); }
   .add-input::placeholder { color: rgba(253,248,240,0.3); }
-  .add-btn {
-    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-    border: none; border-radius: 6px;
-    padding: 9px 16px;
-    color: var(--dark); font-size: 20px; font-weight: 700;
-    cursor: pointer; transition: opacity 0.2s;
-  }
+  .add-btn { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); border: none; border-radius: 6px; padding: 9px 16px; color: var(--dark); font-size: 20px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
   .add-btn:hover { opacity: 0.85; }
-
-  .del-btn {
-    background: none; border: none;
-    color: rgba(201,168,76,0.3);
-    cursor: pointer; font-size: 14px;
-    padding: 2px 6px; border-radius: 4px;
-    margin-left: auto;
-    transition: color 0.2s, background 0.2s;
-  }
+  .del-btn { background: none; border: none; color: rgba(201,168,76,0.3); cursor: pointer; font-size: 14px; padding: 2px 6px; border-radius: 4px; margin-left: auto; transition: color 0.2s, background 0.2s; }
   .del-btn:hover { color: #e05c5c; background: rgba(224,92,92,0.1); }
 </style>
 </head>
 <body>
 <div class="wrapper">
-
   <header>
     <div class="header-ornament">✦ &nbsp; Wedding Reception &nbsp; ✦</div>
     <h1>Bride &amp; <em>Groom</em></h1>
     <div class="header-sub">Seating Plan &nbsp;·&nbsp; Table Layout</div>
-
     <div class="search-wrap">
       <input class="search-input" id="search-input" type="text" placeholder="Search your name..." autocomplete="off" />
       <span class="search-icon">🔍</span>
@@ -402,27 +103,19 @@
       <div class="search-result-box" id="search-result-box"></div>
     </div>
   </header>
-
   <div class="loading-bar" id="loading-bar">Loading guests...</div>
-
   <div class="legend">
     <div class="legend-item"><div class="legend-box"></div> Rectangular table (seats 14)</div>
     <div class="legend-item"><div class="legend-oval"></div> Oval table (seats 12)</div>
   </div>
-
   <div class="hall">
-    <div class="beygelin-banner">
-      <span class="beygelin-text">Bride &amp; Groom</span>
-    </div>
+    <div class="beygelin-banner"><span class="beygelin-text">Bride &amp; Groom</span></div>
     <div class="col col-left" id="left-col"></div>
     <div class="col" id="center-left-col"></div>
     <div class="col" id="center-right-col"></div>
     <div class="col col-right" id="right-col"></div>
     <div class="bottom-bar">
-      <div class="giris-btn">
-        <div class="giris-icon">🏠</div>
-        <div class="giris-label">Entrance</div>
-      </div>
+      <div class="giris-btn"><div class="giris-icon">🏠</div><div class="giris-label">Entrance</div></div>
       <div class="sahne-box">Stage</div>
       <div class="musiqi-box">Music</div>
     </div>
@@ -432,10 +125,7 @@
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title" id="modal-title">
-        Table 1
-        <span id="modal-subtitle">Seats 14</span>
-      </div>
+      <div class="modal-title" id="modal-title">Table 1<span id="modal-subtitle">Seats 14</span></div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
@@ -464,27 +154,27 @@
   let allGuests = [];
 
   const tableDescriptions = {
-    6: 'ABB İnfra',
-    7: 'Datazen',
-    8: 'ABB DevOps',
-    9: 'Azerconnect',
+    6:  'ABB İnfra',
+    7:  'Datazen',
+    8:  'ABB DevOps',
+    9:  'Azerconnect',
     19: 'Gəlinin ailəsi',
     20: 'Bibi ailələri',
-    26: 'atanın əmisigillər',
     21: 'Babagil',
+    22: 'Qrup yoldaşları',
+    23: 'İş yoldaşları',
+    24: 'Mərkəzi Bank',
+    25: 'Rezerv',
+    26: 'Atanın əmisigillər',
     27: 'Bibi uşaqları',
     28: 'Atanın dayısıgillər',
     29: 'Mamanın dayısıgillər',
     30: 'Mamanın əmisigillər',
     31: 'Mərkəzi Bank',
-    22: 'Qrup yoldaşları',
-    23: 'İş yoldaşları',
-    24: 'Mərkəzi Bank',
-    35: 'Kənd (kişilər)',
-    34: 'Kənd (kişilər)',
-    33: 'Rezerv (kişilər)',
     32: 'Rezerv (qadınlar)',
-    25: 'Rezerv',
+    33: 'Rezerv (kişilər)',
+    34: 'Kənd (kişilər)',
+    35: 'Kənd (kişilər)'
   };
 
   function getCapacity(n) { return (n >= 13 && n <= 24) ? 12 : 14; }
@@ -496,28 +186,16 @@
     div.className = `table-card ${isRound ? 'round-table' : 'rect-table'}`;
     div.id = `table-${num}`;
     div.onclick = () => openModal(num);
-    div.innerHTML = `
-      <div class="table-inner">
-        <div class="table-num">${num}</div>
-        <div class="table-cap">Seats ${cap}</div>
-        ${desc ? `<div class="table-desc">${desc}</div>` : ''}
-        <div class="table-count" id="count-${num}"></div>
-      </div>
-      <div class="guest-badge" id="badge-${num}" style="display:none"></div>
-    `;
+    div.innerHTML = `<div class="table-inner"><div class="table-num">${num}</div><div class="table-cap">Seats ${cap}</div>${desc ? `<div class="table-desc">${desc}</div>` : ''}<div class="table-count" id="count-${num}"></div></div><div class="guest-badge" id="badge-${num}" style="display:none"></div>`;
     return div;
   }
 
   function buildLayout() {
     [...leftTables,...clTables,...crTables,...rightTables].forEach(n => { tables[n] = { guests: [] }; });
-    const lc = document.getElementById('left-col');
-    leftTables.forEach(n => lc.appendChild(createCard(n, false)));
-    const clc = document.getElementById('center-left-col');
-    clTables.forEach(n => clc.appendChild(createCard(n, true)));
-    const crc = document.getElementById('center-right-col');
-    crTables.forEach(n => crc.appendChild(createCard(n, true)));
-    const rc = document.getElementById('right-col');
-    rightTables.forEach(n => rc.appendChild(createCard(n, false)));
+    document.getElementById('left-col').append(...leftTables.map(n => createCard(n, false)));
+    document.getElementById('center-left-col').append(...clTables.map(n => createCard(n, true)));
+    document.getElementById('center-right-col').append(...crTables.map(n => createCard(n, true)));
+    document.getElementById('right-col').append(...rightTables.map(n => createCard(n, false)));
   }
 
   function updateCard(num) {
@@ -527,13 +205,11 @@
     const count = document.getElementById(`count-${num}`);
     const card  = document.getElementById(`table-${num}`);
     if (guests.length > 0) {
-      badge.style.display = 'flex';
-      badge.textContent = guests.length;
+      badge.style.display = 'flex'; badge.textContent = guests.length;
       count.textContent = `${guests.length}/${cap} guests`;
       card.classList.add('has-guests');
     } else {
-      badge.style.display = 'none';
-      count.textContent = '';
+      badge.style.display = 'none'; count.textContent = '';
       card.classList.remove('has-guests');
     }
   }
@@ -553,7 +229,6 @@
     }
   }
 
-  // Search
   document.getElementById('search-input').addEventListener('input', function() {
     const q = this.value.trim().toLowerCase();
     const results = document.getElementById('search-results');
@@ -561,16 +236,9 @@
     clearHighlights();
     if (q.length < 2) { results.classList.remove('visible'); return; }
     const matches = allGuests.filter(g => g.name.toLowerCase().includes(q));
-    if (matches.length === 0) {
-      box.innerHTML = '<div class="search-empty">No guest found with this name</div>';
-    } else {
-      box.innerHTML = matches.map(g =>
-        `<div class="search-result-item">
-          <span class="result-name">${g.name}</span>
-          <span class="result-table" onclick="highlightTable(${g.table_number})">Table ${g.table_number}</span>
-        </div>`
-      ).join('');
-    }
+    box.innerHTML = matches.length === 0
+      ? '<div class="search-empty">No guest found with this name</div>'
+      : matches.map(g => `<div class="search-result-item"><span class="result-name">${g.name}</span><span class="result-table" onclick="highlightTable(${g.table_number})">Table ${g.table_number}</span></div>`).join('');
     results.classList.add('visible');
   });
 
@@ -581,24 +249,19 @@
   function highlightTable(num) {
     clearHighlights();
     const card = document.getElementById(`table-${num}`);
-    if (card) {
-      card.classList.add('highlighted');
-      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    if (card) { card.classList.add('highlighted'); card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
   }
 
   document.addEventListener('click', function(e) {
-    if (!e.target.closest('.search-wrap') && !e.target.closest('.search-results')) {
+    if (!e.target.closest('.search-wrap') && !e.target.closest('.search-results'))
       document.getElementById('search-results').classList.remove('visible');
-    }
   });
 
   function openModal(num) {
     currentTable = num;
-    const cap = getCapacity(num);
     const desc = tableDescriptions[num] || '';
     document.getElementById('modal-title').childNodes[0].textContent = `Table ${num}${desc ? ' — ' + desc : ''}  `;
-    document.getElementById('modal-subtitle').textContent = `Seats ${cap}`;
+    document.getElementById('modal-subtitle').textContent = `Seats ${getCapacity(num)}`;
     document.getElementById('guest-input').value = '';
     renderGuestList();
     document.getElementById('modal').classList.add('open');
@@ -610,8 +273,7 @@
     const input = document.getElementById('guest-input');
     const name = input.value.trim();
     if (!name) return;
-    const cap = getCapacity(currentTable);
-    if (tables[currentTable].guests.length >= cap) {
+    if (tables[currentTable].guests.length >= getCapacity(currentTable)) {
       input.style.borderColor = '#e0845c';
       setTimeout(() => input.style.borderColor = '', 1000);
       return;
@@ -620,11 +282,7 @@
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/guests`, {
         method: 'POST',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json'
-        },
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ table_number: currentTable, name })
       });
       if (res.ok) {
@@ -640,9 +298,7 @@
   }
 
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && document.getElementById('modal').classList.contains('open')) {
-      addGuest();
-    }
+    if (e.key === 'Enter' && document.getElementById('modal').classList.contains('open')) addGuest();
   });
 
   function closeModal() {
@@ -681,10 +337,7 @@
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/guests?table_number=eq.${tableNum}&name=eq.${encodeURIComponent(name)}&limit=1`, {
         method: 'DELETE',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
-        }
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
       });
       if (res.ok) {
         const idx = tables[tableNum].guests.indexOf(name);
